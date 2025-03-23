@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>voiofsharu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image:url ("P.1.png");
+            background: black;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #ff4b2b;
+        }
+
+        .playlist-page {
+            display: none;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            background: #ff4b2b;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            background: #ff5733;
+        }
+
+        .song {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #333;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .song img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+        }
+
+        .song-info {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .playlist {
+            margin-top: 20px;
+            padding: 10px;
+            background: #222;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎶VOIOFSHARU </h1>
+        <button onclick="goToPlaylist()">Go to Playlist</button>
+
+        <div id="songList">
+            <!-- Songs will be loaded here -->
+        </div>
+    </div>
+
+    <div class="container playlist-page" id="playlistPage">
+        <h1>🎵 Your Playlists</h1>
+        <button onclick="goToHome()">Back to Home</button>
+        <div id="playlistSongs">
+            <!-- Songs from playlist will be shown here -->
+        </div>
+    </div>
+
+    <script>
+        const songs = [
+            { title: "Song 1", artist: "SHARU", src: "Kadhal Ennum.mp3",image: "P.1.png" },
+            { title: "Song 2", artist: "SHARU", src: "Poovellam.mp3", image: "P.1.png" },
+            { title: "Song 3", artist: "SHARU", src: "rasaa.mp3", image: "P.1.png" },
+             { title: "Song 4", artist: "SHARU", src: "Ayiram.mp3", image: "P.1.png" },
+ { title: "Song 5", artist: "SHARU", src: "Thurathu.mp3", image: "P.1.png" },
+ { title: "Song 6", artist: "SHARU", src: "Ayiram.mp3", image: "P.1.png" }, 
+        ];
+
+        let playlists = JSON.parse(localStorage.getItem("playlists")) || [];
+
+        function loadSongs() {
+            const songList = document.getElementById("songList");
+            songList.innerHTML = "";
+
+            songs.forEach((song, index) => {
+                const songElement = document.createElement("div");
+                songElement.classList.add("song");
+
+                songElement.innerHTML = `
+                    <img src="${song.image}" alt="Cover">
+                    <div class="song-info">
+                        <h3>${song.title}</h3>
+                        <p>${song.artist}</p>
+                        <audio controls>
+                            <source src="${song.src}" type="audio/mpeg">
+                        </audio>
+                        <button onclick="addToPlaylist(${index})">➕ Add</button>
+                    </div>
+                `;
+
+                songList.appendChild(songElement);
+            });
+        }
+
+        function addToPlaylist(songIndex) {
+            playlists.push(songs[songIndex]);
+            localStorage.setItem("playlists", JSON.stringify(playlists));
+            alert(`${songs[songIndex].title} added to playlist`);
+            displayPlaylists();
+        }
+function removeFromPlaylist(index) {
+            playlists.splice(index, 1);
+            localStorage.setItem("playlists", JSON.stringify(playlists));
+            displayPlaylists();
+        }
+ function displayPlaylists() {
+            const playlistSongs = document.getElementById("playlistSongs");
+            playlistSongs.innerHTML = "";
+            playlists.forEach((song, index) => {
+                const songElement = document.createElement("div");
+                songElement.classList.add("song");
+                songElement.innerHTML = `
+                    <img src="${song.image}" alt="Cover">
+                    <div class="song-info">
+                        <h3>${song.title}</h3>
+                        <p>${song.artist}</p>
+                        <audio controls>
+                            <source src="${song.src}" type="audio/mpeg">
+                        </audio>
+                        <button onclick="removeFromPlaylist(${index})">❌ Remove</button>
+                    </div>
+                `;
+                playlistSongs.appendChild(songElement);
+            });
+        }
+
+        function goToPlaylist() {
+            document.querySelector(".container").style.display = "none";
+            document.getElementById("playlistPage").style.display = "block";
+            displayPlaylists();
+        }
+
+        function goToHome() {
+            document.querySelector(".container").style.display = "block";
+            document.getElementById("playlistPage").style.display = "none";
+        }
+
+        document.addEventListener("DOMContentLoaded", loadSongs);
+    </script>
+</body>
+</html>
